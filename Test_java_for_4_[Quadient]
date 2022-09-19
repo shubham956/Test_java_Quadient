@@ -1,0 +1,183 @@
+package DaoTest;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+
+
+import java.util.Date;
+
+
+
+public class EmployeeUI {
+
+
+
+ public static void main(String[] args) {
+    // TODO Auto-generated method stub
+    EmployeeDaoImpl impl=new EmployeeDaoImpl();
+
+
+
+   Scanner sc=new Scanner(System.in);
+
+
+
+   String driver="com.mysql.cj.jdbc.Driver";
+    String dburl="jdbc:mysql://localhost:3306/Espire";
+    String user="root";
+    String password="root";
+
+
+
+
+  //  do {
+      try {
+        // load the driver
+        Class.forName(driver);
+
+
+
+       //create the connection
+        Connection con=  DriverManager.getConnection(dburl,user,password);
+
+
+
+       //Write and Execute query
+        Statement st=con.createStatement();
+        int id;
+        String name;
+        float salary;
+        String city;
+        String phone;
+        Date doj;
+
+
+
+       int ch;
+//        ResultSet a;
+        System.out.println("\t1.update \t\t2.insert\n\t3.delete\t\t4. Fetch\n");
+        System.out.println("enter your choice : ");
+        ch=sc.nextInt();
+        switch(ch) {
+        case 1:
+          System.out.println("Enter id number : ");
+          id=sc.nextInt();
+          sc.nextLine();
+          System.out.println("Enter name : ");
+          name=sc.nextLine();
+
+
+
+         System.out.println("Enter salary : ");
+          salary=sc.nextFloat();
+
+
+
+         sc.nextLine();
+          System.out.println("Enter city : ");
+          city=sc.nextLine();
+
+
+
+         sc.nextLine();
+          System.out.println("Enter phone : ");
+          phone=sc.nextLine();
+          doj=null;
+
+
+
+         impl.update(id,name,salary,city,phone,doj);
+
+
+
+         String sql2="update employee1 set name = ('"+name+"'), salary = ("+salary+"), = ('"+city+"'),phone = ('"+phone+"'), where id=("+id+")";
+          ch=st.executeUpdate(sql2);
+          System.out.println("\n *Edited* \n");
+          break;
+
+
+
+       case 2:// insert
+          System.out.println("Enter id number : ");
+          id=sc.nextInt();
+          sc.nextLine();
+          System.out.println("Enter name : ");
+          name=sc.nextLine();
+
+
+
+         System.out.println("Enter salary : ");
+          salary=sc.nextFloat();
+
+
+
+         sc.nextLine();
+          System.out.println("Enter city : ");
+          city=sc.nextLine();
+
+
+
+//          sc.nextLine();
+          System.out.println("Enter Phone number : ");
+          phone=sc.nextLine();
+
+
+
+
+          doj=null;
+
+
+
+         String sql="insert into employee1 values("+id+",'"+name+"',"+salary+",'"+city+"','"+phone+"',"+doj+")";
+
+
+
+         Employee e1=new Employee(id,name,salary,city,phone,doj);
+          impl.insert(e1);
+          ch=st.executeUpdate(sql);
+          System.out.println("\n *Add Succesfull* \n");
+          break;
+
+
+
+       case 3:// Delete
+          System.out.println("Enter id number : ");
+          id=sc.nextInt();
+          impl.Delete(id);
+          String sql1="delete from employee1 where id=("+id+")";
+          ch=st.executeUpdate(sql1);
+          System.out.println("\n *Delete succesfull* \n");
+          break;
+
+
+
+       case 4:
+          impl.fetch();
+          String sqlq="select * from employee1";
+          ResultSet rs=st.executeQuery(sqlq);
+          while(rs.next())
+          {
+            System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getDouble(3)+" "+rs.getString(4)+" "+rs.getString(5)+" "+rs.getString(6));
+          }
+          break;
+
+
+
+       }
+
+
+
+     //}while(true);
+      }catch(ClassNotFoundException |SQLException e1)
+      {
+        System.out.println(e1.getMessage());
+      }
+	}
+
+}
